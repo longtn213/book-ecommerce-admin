@@ -2,18 +2,18 @@ import {
   Box,
   Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  TextField,
+  DialogContent,
+  DialogTitle,
   MenuItem,
-  Grid,
+  Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { updateAdminUser } from 'src/services/auth';
 import type { UserProps } from './user-table-row';
@@ -102,6 +102,7 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
 
   // ----------------------------------------------------------------------
 
+  // @ts-ignore
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
@@ -112,27 +113,16 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
 
       <DialogContent dividers sx={{ backgroundColor: '#fafafa' }}>
         <Box component="form" sx={{ mt: 1 }}>
-          <Grid container spacing={2}>
-            {/* Username */}
-            <Grid item xs={12} sm={6}>
+          <Stack spacing={2} mt={1}>
+            {/* Row 1: Username + Full Name */}
+            <Stack direction="row" spacing={2}>
               <Controller
                 name="username"
                 control={control}
                 render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label="Username"
-                    disabled
-                    size="small"
-                    variant="outlined"
-                  />
+                  <TextField {...field} fullWidth label="Username" disabled size="small" />
                 )}
               />
-            </Grid>
-
-            {/* Full name */}
-            <Grid item xs={12} sm={6}>
               <Controller
                 name="fullName"
                 control={control}
@@ -140,10 +130,10 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
                   <TextField {...field} fullWidth label="Full Name" size="small" />
                 )}
               />
-            </Grid>
+            </Stack>
 
-            {/* Email */}
-            <Grid item xs={12} sm={6}>
+            {/* Row 2: Email + Phone */}
+            <Stack direction="row" spacing={2}>
               <Controller
                 name="email"
                 control={control}
@@ -151,10 +141,6 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
                   <TextField {...field} fullWidth label="Email" size="small" />
                 )}
               />
-            </Grid>
-
-            {/* Phone */}
-            <Grid item xs={12} sm={6}>
               <Controller
                 name="phone"
                 control={control}
@@ -162,10 +148,10 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
                   <TextField {...field} fullWidth label="Phone" size="small" />
                 )}
               />
-            </Grid>
+            </Stack>
 
-            {/* Gender (rộng hơn) */}
-            <Grid item xs={12} sm={8}>
+            {/* Row 3: Gender (rộng hơn) + Role */}
+            <Stack direction="row" spacing={2}>
               <Controller
                 name="gender"
                 control={control}
@@ -176,36 +162,28 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
                     fullWidth
                     label="Gender"
                     size="small"
-                    sx={{
-                      minWidth: 200, // đảm bảo không bị bó khi không có dữ liệu
-                    }}
                   >
-                    <MenuItem value="">---</MenuItem>
                     <MenuItem value="MALE">Male</MenuItem>
                     <MenuItem value="FEMALE">Female</MenuItem>
                     <MenuItem value="OTHER">Other</MenuItem>
                   </TextField>
                 )}
               />
-            </Grid>
-
-            {/* Role (hẹp hơn, 4 phần) */}
-            <Grid item xs={12} sm={4}>
               <Controller
                 name="role"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} select fullWidth label="Role" size="small">
+                  <TextField {...field} select fullWidth label="Role" size="small" >
                     <MenuItem value="CUSTOMER">Customer</MenuItem>
                     <MenuItem value="STAFF">Staff</MenuItem>
                     <MenuItem value="ADMIN">Admin</MenuItem>
                   </TextField>
                 )}
               />
-            </Grid>
+            </Stack>
 
-            {/* Status */}
-            <Grid item xs={12} sm={6}>
+            {/* Row 4: Status + Date of Birth */}
+            <Stack direction="row" spacing={2}>
               <Controller
                 name="userStatus"
                 control={control}
@@ -217,10 +195,6 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
                   </TextField>
                 )}
               />
-            </Grid>
-
-            {/* Date of Birth */}
-            <Grid item xs={12} sm={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
                   name="dateOfBirth"
@@ -231,9 +205,7 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
                       label="Date of Birth"
                       format="DD/MM/YYYY"
                       value={field.value ? dayjs(field.value) : null}
-                      onChange={(val) =>
-                        field.onChange(val ? val.format('YYYY-MM-DD') : '')
-                      }
+                      onChange={(val) => field.onChange(val ? val.format('YYYY-MM-DD') : '')}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -244,9 +216,8 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
                   )}
                 />
               </LocalizationProvider>
-            </Grid>
-
-          </Grid>
+            </Stack>
+          </Stack>
         </Box>
       </DialogContent>
 
@@ -254,11 +225,7 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
         <Button onClick={onClose} color="inherit">
           Hủy
         </Button>
-        <Button
-          variant="contained"
-          onClick={handleSubmit(onSubmit)}
-          sx={{ px: 3 }}
-        >
+        <Button variant="contained" onClick={handleSubmit(onSubmit)} sx={{ px: 3 }}>
           Lưu thay đổi
         </Button>
       </DialogActions>
