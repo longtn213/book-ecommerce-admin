@@ -43,7 +43,6 @@ export function SignInView() {
 
       // ✅ Decode token
       const decoded: JwtPayload & { role?: string } = jwtDecode(token);
-      console.log("Decoded token:", decoded);
 
       // ✅ Kiểm tra quyền
       const userRole = decoded.role ;

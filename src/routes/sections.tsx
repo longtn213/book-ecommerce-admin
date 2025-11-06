@@ -81,5 +81,5 @@ export const routesSection: RouteObject[] = [
       </AuthLayout>
     ),
   },
-  { path: '*', element: <Page404 /> },
+  // { path: '*', element: <Page404 /> },
 ];
