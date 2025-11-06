@@ -50,6 +50,20 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     [handleClosePopover, router]
   );
 
+  // ✅ Xử lý logout
+  const handleLogout = useCallback(() => {
+    // 1. Xóa thông tin trong localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('email');
+
+    // 2. Đóng popover
+    handleClosePopover();
+
+    // 3. Điều hướng về trang login
+    router.push('/sign-in');
+  }, [router, handleClosePopover]);
+
   return (
     <>
       <IconButton
@@ -129,7 +143,14 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
+          {/* ✅ Gắn handler logout */}
+          <Button
+            fullWidth
+            color="error"
+            size="medium"
+            variant="text"
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         </Box>

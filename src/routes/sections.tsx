@@ -7,8 +7,11 @@ import { varAlpha } from 'minimal-shared/utils';
 import Box from '@mui/material/Box';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
+import PrivateRoute from 'src/routes/PrivateRoute';
+
 import { AuthLayout } from 'src/layouts/auth';
 import { DashboardLayout } from 'src/layouts/dashboard';
+import ResetPasswordPage from '../sections/auth/reset-password';
 
 // ----------------------------------------------------------------------
 
@@ -42,17 +45,24 @@ const renderFallback = () => (
 export const routesSection: RouteObject[] = [
   {
     element: (
-      <DashboardLayout>
-        <Suspense fallback={renderFallback()}>
-          <Outlet />
-        </Suspense>
-      </DashboardLayout>
+      <PrivateRoute />   // ✅ thêm dòng này
     ),
     children: [
-      { index: true, element: <DashboardPage /> },
-      { path: 'user', element: <UserPage /> },
-      { path: 'products', element: <ProductsPage /> },
-      { path: 'blog', element: <BlogPage /> },
+      {
+        element: (
+          <DashboardLayout>
+            <Suspense fallback={renderFallback()}>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        ),
+        children: [
+          { index: true, element: <DashboardPage /> },
+          { path: 'user', element: <UserPage /> },
+          { path: 'products', element: <ProductsPage /> },
+          { path: 'blog', element: <BlogPage /> },
+        ],
+      },
     ],
   },
   {
@@ -64,8 +74,12 @@ export const routesSection: RouteObject[] = [
     ),
   },
   {
-    path: '404',
-    element: <Page404 />,
+    path: 'reset-password',
+    element: (
+      <AuthLayout>
+        <ResetPasswordPage />
+      </AuthLayout>
+    ),
   },
   { path: '*', element: <Page404 /> },
 ];
