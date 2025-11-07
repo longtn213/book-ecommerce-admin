@@ -22,6 +22,9 @@ export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const CouponPage = lazy(() => import('src/pages/coupon'));
 export const CategoryPage = lazy(() => import('src/pages/category'));
+export const PublisherPage = lazy(() => import('src/pages/publisher'));
+export const AuthorPage = lazy(() => import('src/pages/author'));
+
 
 const renderFallback = () => (
   <Box
@@ -63,6 +66,8 @@ export const routesSection: RouteObject[] = [
           { path: 'products', element: <ProductsPage /> },
           { path: 'coupon', element: <CouponPage /> },
           { path: 'category', element: <CategoryPage /> },
+          { path: 'publisher', element: <PublisherPage /> },
+          { path: 'author', element: <AuthorPage /> },
         ],
       },
     ],
