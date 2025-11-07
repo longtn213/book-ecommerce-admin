@@ -20,7 +20,7 @@ import type { UserProps } from './user-table-row';
 
 // ----------------------------------------------------------------------
 
-type UpdateUserPayload = {
+export type UpdateUserPayload = {
   id: number;
   username: string;
   fullName: string | null;

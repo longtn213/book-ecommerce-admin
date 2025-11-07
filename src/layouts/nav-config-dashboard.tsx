@@ -28,4 +28,9 @@ export const navData = [
     path: '/products',
     icon: icon('ic-cart'),
   },
+  {
+    title: 'Coupon',
+    path: '/coupon',
+    icon: icon('ic-coupon'),
+  },
 ];
