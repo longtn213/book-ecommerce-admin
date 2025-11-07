@@ -33,4 +33,9 @@ export const navData = [
     path: '/coupon',
     icon: icon('ic-coupon'),
   },
+  {
+    title: 'Category',
+    path: '/category',
+    icon: icon('ic-category'),
+  },
 ];

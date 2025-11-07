@@ -28,7 +28,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dayjs from 'dayjs';
-import { createCoupon, deleteCoupon, getCoupons, updateCoupon } from '../../services/auth';
+import { createCoupon, deleteCoupon, getCoupons, updateCoupon } from '../../services/coupon';
 
 // ----------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ export default function CouponsPage() {
 
   // pagination FE
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [confirmDelete, setConfirmDelete] = useState<{ open: boolean; code: string | null }>({
     open: false,
     code: null,
@@ -138,9 +138,11 @@ export default function CouponsPage() {
 
   // ✅ Giao diện chính
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
+    <Box sx={{ flexGrow: 1, p: 3 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4">Quản lý mã khuyến mãi</Typography>
+        <Typography variant="h4" fontWeight={600} mb={3}>
+          Quản lý mã khuyến mãi
+        </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -151,15 +153,9 @@ export default function CouponsPage() {
         </Button>
       </Stack>
 
-      <Card
-        sx={{
-          borderRadius: 3,
-          boxShadow: '0px 4px 12px rgba(0,0,0,0.08)',
-          overflow: 'hidden',
-        }}
-      >
+      <Card sx={{ borderRadius: 3, boxShadow: '0px 2px 8px rgba(0,0,0,0.05)' }}>
         <CardContent sx={{ p: 0 }}>
-          <TableContainer>
+          <TableContainer sx={{ overflowX: 'auto' }}>
             <Table sx={{ minWidth: 800 }}>
               <TableHead sx={{ bgcolor: 'grey.50' }}>
                 <TableRow>
