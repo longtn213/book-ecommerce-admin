@@ -1,14 +1,14 @@
 import { CONFIG } from 'src/config-global';
-import AuthorPage from '../sections/author';
+import OrderPage from '../sections/order';
+
 
 // ----------------------------------------------------------------------
 
 export default function Page() {
   return (
     <>
-      <title>{`Author - ${CONFIG.appName}`}</title>
-
-      <AuthorPage/>
+      <title>{`Order - ${CONFIG.appName}`}</title>
+      <OrderPage/>
     </>
   );
 }

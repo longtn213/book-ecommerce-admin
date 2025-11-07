@@ -85,7 +85,7 @@ export function UserView() {
         }}
       >
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          Users
+          Danh sách người dùng
         </Typography>
         <Button
           variant="contained"
@@ -93,7 +93,7 @@ export function UserView() {
           startIcon={<Iconify icon="mingcute:add-line" />}
           onClick={() => setOpenModal(true)}
         >
-          New user
+          Thêm người dùng mới
         </Button>
       </Box>
       <UserCreateModal

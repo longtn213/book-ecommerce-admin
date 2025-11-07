@@ -48,4 +48,9 @@ export const navData = [
     path: '/author',
     icon: icon('ic-author'),
   },
+  {
+    title: 'Order',
+    path: '/Order',
+    icon: icon('ic-order'),
+  },
 ];
