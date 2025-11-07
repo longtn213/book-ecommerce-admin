@@ -14,3 +14,14 @@ export const getOrderDetail = async (token: string, id: number) => {
   });
   return res.data;
 };
+export const updateOrderStatus = async (token: string, id: number, status: string) => {
+  const res = await axios.put(
+    `${API_BASE}/admin/orders/${id}/status`,
+    {},
+    {
+      params: { status },
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return res.data;
+};

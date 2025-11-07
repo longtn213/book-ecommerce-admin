@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,7 +24,8 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { getOrders, getOrderDetail } from '../../services/order';
+import { getOrders, getOrderDetail, updateOrderStatus } from '../../services/order';
+import { useNotification } from '../../layouts/components/useNotification';
 
 const ORDER_STATUSES = ['PENDING', 'PAID', 'SHIPPING', 'COMPLETED', 'CANCELLED'];
 
@@ -36,9 +38,11 @@ export default function OrderPage() {
   const [status, setStatus] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [openModal, setOpenModal] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const token = localStorage.getItem('token') ?? '';
+  const { showNotification, Notification } = useNotification();
 
-  // Fetch danh sách đơn hàng
+  // Lấy danh sách đơn hàng
   const fetchOrders = async () => {
     try {
       const params = {
@@ -75,6 +79,27 @@ export default function OrderPage() {
     }
   };
 
+  const handleUpdateStatus = async () => {
+    if (!selectedOrder) return;
+    try {
+      setUpdating(true);
+      const res = await updateOrderStatus(token, selectedOrder.id, selectedOrder.status);
+
+      if (res.success) {
+        showNotification('Cập nhật trạng thái thành công!', 'success');
+        setOpenModal(false);
+        fetchOrders();
+      } else {
+        showNotification(res.message || 'Cập nhật thất bại!', 'error');
+      }
+    } catch (err: any) {
+      console.error('Lỗi khi cập nhật trạng thái đơn hàng:', err);
+      showNotification(err.response?.data?.message || 'Lỗi không xác định!', 'error');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h5" sx={{ mb: 2 }}>
@@ -87,7 +112,7 @@ export default function OrderPage() {
           size="small"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          sx={{ width:500 }}
+          sx={{ width: 500 }}
         />
         <TextField
           label="Trạng thái"
@@ -124,6 +149,7 @@ export default function OrderPage() {
                   <TableCell>Người dùng</TableCell>
                   <TableCell>Trạng thái</TableCell>
                   <TableCell>Tổng tiền</TableCell>
+                  <TableCell>Thanh toán</TableCell>
                   <TableCell>Địa chỉ giao</TableCell>
                   <TableCell>Ngày tạo</TableCell>
                   <TableCell align="center">Hành động</TableCell>
@@ -136,6 +162,15 @@ export default function OrderPage() {
                     <TableCell>{order.username}</TableCell>
                     <TableCell>{order.status}</TableCell>
                     <TableCell>{order.totalAmount.toLocaleString('vi-VN')} ₫</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={order.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                        color={order.paid ? 'success' : 'error'}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </TableCell>
+
                     <TableCell>{order.shippingAddress}</TableCell>
                     <TableCell>{new Date(order.createdAt).toLocaleString('vi-VN')}</TableCell>
                     <TableCell align="center">
@@ -176,9 +211,38 @@ export default function OrderPage() {
                 <strong>Khách hàng:</strong> {selectedOrder.username}
               </Typography>
               <Typography>
-                <strong>Trạng thái:</strong> {selectedOrder.status}
+                <strong>Thanh toán:</strong>{' '}
+                <Chip
+                  label={selectedOrder.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                  color={selectedOrder.paid ? 'success' : 'error'}
+                  size="small"
+                />
               </Typography>
-              <Typography>
+
+
+              {/* Dropdown trạng thái có thể thay đổi */}
+              <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 1 }}>
+                <Typography>
+                  <strong>Trạng thái:</strong>
+                </Typography>
+                <TextField
+                  size="small"
+                  select
+                  value={selectedOrder.status}
+                  onChange={(e) =>
+                    setSelectedOrder({ ...selectedOrder, status: e.target.value })
+                  }
+                  sx={{ minWidth: 200 }}
+                >
+                  {ORDER_STATUSES.map((s) => (
+                    <MenuItem key={s} value={s}>
+                      {s}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Stack>
+
+              <Typography sx={{ mt: 1 }}>
                 <strong>Tổng tiền:</strong>{' '}
                 {selectedOrder.totalAmount.toLocaleString('vi-VN')} ₫
               </Typography>
@@ -216,8 +280,17 @@ export default function OrderPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenModal(false)}>Đóng</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={updating}
+            onClick={handleUpdateStatus}
+          >
+            {updating ? 'Đang lưu...' : 'Lưu thay đổi'}
+          </Button>
         </DialogActions>
       </Dialog>
+      {Notification}
     </Box>
   );
 }
