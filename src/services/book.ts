@@ -6,29 +6,29 @@ const BOOK_API = '/books';
 // 🟢 Lấy danh sách sách (filter + pagination)
 export const getBooks = async (params?: any) => {
   const res = await axiosInstance.get(BOOK_API, { params });
-  return res.data.data;
+  return res.data;
 };
 
 // 🟢 Lấy chi tiết sách
 export const getBookById = async (id: number | string) => {
   const res = await axiosInstance.get(`${BOOK_API}/${id}`);
-  return res.data.data;
+  return res.data;
 };
 
 // 🟢 Thêm sách mới
 export const createBook = async (payload: any) => {
   const res = await axiosInstance.post(BOOK_API, payload);
-  return res.data.data;
+  return res.data;
 };
 
 // 🟢 Cập nhật sách
 export const updateBook = async (id: number | string, payload: any) => {
   const res = await axiosInstance.put(`${BOOK_API}/${id}`, payload);
-  return res.data.data;
+  return res.data;
 };
 
 // 🟢 Xóa sách
 export const deleteBook = async (id: number | string) => {
   const res = await axiosInstance.delete(`${BOOK_API}/${id}`);
-  return res.data.data;
+  return res.data;
 };

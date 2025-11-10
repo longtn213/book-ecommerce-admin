@@ -2471,6 +2471,11 @@ react-is@^19.2.0:
   resolved "https://registry.npmjs.org/react-is/-/react-is-19.2.0.tgz"
   integrity sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==
 
+react-number-format@^5.4.4:
+  version "5.4.4"
+  resolved "https://registry.npmjs.org/react-number-format/-/react-number-format-5.4.4.tgz"
+  integrity sha512-wOmoNZoOpvMminhifQYiYSTCLUDOiUbBunrMrMjA+dV52sY+vck1S4UhR6PkgnoCquvvMSeJjErXZ4qSaWCliA==
+
 react-router-dom@^7.4.1:
   version "7.9.5"
   resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-7.9.5.tgz"

@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 // 🧩 Interceptor: tự động thêm token vào mỗi request
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('ACCESS_TOKEN'); // hoặc sessionStorage
+    const token = localStorage.getItem('token'); // hoặc sessionStorage
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

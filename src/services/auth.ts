@@ -30,7 +30,7 @@ export const resetPasswordApi = async (token: string, newPassword: string) => {
 // 🟢 Lấy danh sách admin user
 export const getAdminUsers = async () => {
   const res = await axiosInstance.get('/admin/users');
-  return res.data.data || res.data;
+  return  res.data;
 };
 
 // 🟢 Tạo admin user
@@ -41,11 +41,11 @@ export const createAdminUser = async (payload: {
   role: string;
 }) => {
   const res = await axiosInstance.post('/admin/users', payload);
-  return res.data.data || res.data;
+  return  res.data;
 };
 
 // 🟢 Cập nhật admin user
 export const updateAdminUser = async (data: UpdateUserPayload) => {
   const res = await axiosInstance.put('/admin/users', data);
-  return res.data.data || res.data;
+  return  res.data;
 };

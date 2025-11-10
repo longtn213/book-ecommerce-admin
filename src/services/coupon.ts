@@ -8,7 +8,7 @@ const COUPON_API = '/admin/coupons';
  */
 export const getCoupons = async (params?: any) => {
   const res = await axiosInstance.get(COUPON_API, { params });
-  return res.data.data || res.data;
+  return res.data;
 };
 
 /**
@@ -16,7 +16,7 @@ export const getCoupons = async (params?: any) => {
  */
 export const createCoupon = async (data: any) => {
   const res = await axiosInstance.post(COUPON_API, data);
-  return res.data.data || res.data;
+  return res.data;
 };
 
 /**
@@ -24,7 +24,7 @@ export const createCoupon = async (data: any) => {
  */
 export const updateCoupon = async (data: any) => {
   const res = await axiosInstance.put(COUPON_API, data);
-  return res.data.data || res.data;
+  return res.data;
 };
 
 /**
@@ -32,5 +32,5 @@ export const updateCoupon = async (data: any) => {
  */
 export const deleteCoupon = async (code: string) => {
   const res = await axiosInstance.delete(COUPON_API, { params: { code } });
-  return res.data.data || res.data;
+  return res.data;
 };

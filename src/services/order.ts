@@ -9,7 +9,7 @@ const ORDER_API = '/admin/orders';
  */
 export const getOrders = async (params?: any) => {
   const res = await axiosInstance.get(ORDER_API, { params });
-  return res.data.data || res.data;
+  return res.data;
 };
 
 /**
@@ -17,7 +17,7 @@ export const getOrders = async (params?: any) => {
  */
 export const getOrderDetail = async (id: number) => {
   const res = await axiosInstance.get(`${ORDER_API}/${id}`);
-  return res.data.data || res.data;
+  return res.data;
 };
 
 /**
@@ -25,5 +25,5 @@ export const getOrderDetail = async (id: number) => {
  */
 export const updateOrderStatus = async (id: number, status: string) => {
   const res = await axiosInstance.put(`${ORDER_API}/${id}/status`, {}, { params: { status } });
-  return res.data.data || res.data;
+  return res.data;
 };

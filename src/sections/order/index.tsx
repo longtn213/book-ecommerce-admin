@@ -100,8 +100,8 @@ export default function OrderPage() {
   };
 
   return (
-    <Box>
-      <Typography variant="h5" sx={{ mb: 2 }}>
+    <Box sx={{ flexGrow: 1, p: 3 }}>
+      <Typography variant="h4" fontWeight={600} mb={3}>
         Danh sách đơn hàng
       </Typography>
 
