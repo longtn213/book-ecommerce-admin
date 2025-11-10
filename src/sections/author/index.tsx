@@ -66,7 +66,7 @@ export default function AuthorPage() {
   const fetchAuthors = async () => {
     try {
       setLoading(true);
-      const res = await getAuthors(token);
+      const res = await getAuthors();
       setAuthors(res.data?.data || []);
     } catch (err) {
       console.error('Lỗi khi load authors:', err);
@@ -97,9 +97,9 @@ export default function AuthorPage() {
   const handleSave = async () => {
     try {
       if (editingAuthor) {
-        await updateAuthor(token, form);
+        await updateAuthor(form);
       } else {
-        await createAuthor(token, form);
+        await createAuthor(form);
       }
       await fetchAuthors();
       setOpenDialog(false);
@@ -115,7 +115,7 @@ export default function AuthorPage() {
   const handleConfirmDelete = async () => {
     if (!confirmDelete.id) return;
     try {
-      await deleteAuthor(token, confirmDelete.id);
+      await deleteAuthor(confirmDelete.id);
       await fetchAuthors();
     } catch (err) {
       console.error('Lỗi khi xóa tác giả:', err);

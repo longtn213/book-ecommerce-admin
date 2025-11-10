@@ -1,40 +1,28 @@
-import axios from 'axios';
+// src/services/category.ts
+import axiosInstance from '../utils/axiosInstance';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:6868/api';
-export const getCategories = async (token: string) => {
-  const res = await axios.get(`${API_BASE}/categories`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+const CATEGORY_API = '/categories';
+
+// 🟢 Lấy danh sách category
+export const getCategories = async () => {
+  const res = await axiosInstance.get(CATEGORY_API);
+  return res.data.data || res.data;
 };
 
-export const createCategory = async (token: string, data: any) => {
-  const res = await axios.post(`${API_BASE}/categories`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  return res.data;
+// 🟢 Tạo category mới
+export const createCategory = async (data: any) => {
+  const res = await axiosInstance.post(CATEGORY_API, data);
+  return res.data.data || res.data;
 };
 
-export const updateCategory = async (token: string, data: any) => {
-  const res = await axios.put(`${API_BASE}/categories`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  return res.data;
+// 🟢 Cập nhật category
+export const updateCategory = async (data: any) => {
+  const res = await axiosInstance.put(CATEGORY_API, data);
+  return res.data.data || res.data;
 };
 
-export const deleteCategory = async (token: string, id: number) => {
-  const res = await axios.delete(`${API_BASE}/categories/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+// 🟢 Xóa category
+export const deleteCategory = async (id: number) => {
+  const res = await axiosInstance.delete(`${CATEGORY_API}/${id}`);
+  return res.data.data || res.data;
 };

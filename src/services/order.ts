@@ -1,27 +1,29 @@
-import axios from 'axios';
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:6868/api';
+// src/services/order.ts
+import axiosInstance from '../utils/axiosInstance';
 
-export const getOrders = async (token: string,params: any) => {
-  const res = await axios.get(`${API_BASE}/admin/orders`,{
-    params,
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return res.data;
+const ORDER_API = '/admin/orders';
+
+/**
+ * 🟢 Lấy danh sách đơn hàng
+ * Có hỗ trợ filter, search, phân trang (params)
+ */
+export const getOrders = async (params?: any) => {
+  const res = await axiosInstance.get(ORDER_API, { params });
+  return res.data.data || res.data;
 };
-export const getOrderDetail = async (token: string, id: number) => {
-  const res = await axios.get(`${API_BASE}/admin/orders/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.data;
+
+/**
+ * 🟢 Lấy chi tiết đơn hàng theo ID
+ */
+export const getOrderDetail = async (id: number) => {
+  const res = await axiosInstance.get(`${ORDER_API}/${id}`);
+  return res.data.data || res.data;
 };
-export const updateOrderStatus = async (token: string, id: number, status: string) => {
-  const res = await axios.put(
-    `${API_BASE}/admin/orders/${id}/status`,
-    {},
-    {
-      params: { status },
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
-  return res.data;
+
+/**
+ * 🟢 Cập nhật trạng thái đơn hàng
+ */
+export const updateOrderStatus = async (id: number, status: string) => {
+  const res = await axiosInstance.put(`${ORDER_API}/${id}/status`, {}, { params: { status } });
+  return res.data.data || res.data;
 };

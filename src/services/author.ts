@@ -1,15 +1,27 @@
-import axios from 'axios';
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:6868/api';
+import axiosInstance from '../utils/axiosInstance';
 
+const AUTHOR_API = '/authors';
 
-export const getAuthors = async (token: string) =>
-  axios.get(`${API_BASE}/authors`, { headers: { Authorization: `Bearer ${token}` } });
+// 🟢 Lấy danh sách tác giả
+export const getAuthors = async () => {
+  const res = await axiosInstance.get(AUTHOR_API);
+  return res.data.data || res.data;
+};
 
-export const createAuthor = async (token: string, data: any) =>
-  axios.post(`${API_BASE}/authors`, data, { headers: { Authorization: `Bearer ${token}` } });
+// 🟢 Tạo mới tác giả
+export const createAuthor = async (data: any) => {
+  const res = await axiosInstance.post(AUTHOR_API, data);
+  return res.data.data || res.data;
+};
 
-export const updateAuthor = async (token: string, data: any) =>
-  axios.put(`${API_BASE}/authors`, data, { headers: { Authorization: `Bearer ${token}` } });
+// 🟢 Cập nhật tác giả
+export const updateAuthor = async (data: any) => {
+  const res = await axiosInstance.put(AUTHOR_API, data);
+  return res.data.data || res.data;
+};
 
-export const deleteAuthor = async (token: string, id: number) =>
-  axios.delete(`${API_BASE}/authors/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+// 🟢 Xóa tác giả
+export const deleteAuthor = async (id: number) => {
+  const res = await axiosInstance.delete(`${AUTHOR_API}/${id}`);
+  return res.data.data || res.data;
+};

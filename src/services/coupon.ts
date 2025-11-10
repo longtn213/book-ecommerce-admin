@@ -1,53 +1,36 @@
-import axios from 'axios';
+// src/services/coupon.ts
+import axiosInstance from '../utils/axiosInstance';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:6868/api';
+const COUPON_API = '/admin/coupons';
+
 /**
- * Lấy danh sách coupon (có thể lọc theo trạng thái nếu BE hỗ trợ)
+ * 🟢 Lấy danh sách coupon (có thể lọc theo trạng thái, keyword, v.v. nếu BE hỗ trợ)
  */
-export const getCoupons = async (token: string) => {
-  const res = await axios.get(`${API_BASE}/admin/coupons`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+export const getCoupons = async (params?: any) => {
+  const res = await axiosInstance.get(COUPON_API, { params });
+  return res.data.data || res.data;
 };
 
 /**
- * Tạo coupon mới
+ * 🟢 Tạo coupon mới
  */
-export const createCoupon = async (token: string, data: any) => {
-  const res = await axios.post(`${API_BASE}/admin/coupons`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  return res.data;
+export const createCoupon = async (data: any) => {
+  const res = await axiosInstance.post(COUPON_API, data);
+  return res.data.data || res.data;
 };
 
 /**
- * Cập nhật coupon (theo code)
+ * 🟢 Cập nhật coupon (theo code hoặc id — tùy BE)
  */
-export const updateCoupon = async (token: string, data: any) => {
-  const res = await axios.put(`${API_BASE}/admin/coupons`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  return res.data;
+export const updateCoupon = async (data: any) => {
+  const res = await axiosInstance.put(COUPON_API, data);
+  return res.data.data || res.data;
 };
 
 /**
- * Xoá coupon theo code
+ * 🟢 Xóa coupon theo code (hoặc id)
  */
-export const deleteCoupon = async (token: string, code: string) => {
-  const res = await axios.delete(`${API_BASE}/admin/coupons`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: { code },
-  });
-  return res.data;
+export const deleteCoupon = async (code: string) => {
+  const res = await axiosInstance.delete(COUPON_API, { params: { code } });
+  return res.data.data || res.data;
 };

@@ -26,9 +26,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
   createPublisher,
-  updatePublisher,
   deletePublisher,
   getPublishers,
+  updatePublisher,
 } from '../../services/publisher';
 
 // ----------------------------------------------------------------------
@@ -59,12 +59,13 @@ export default function PublisherPage() {
     contactPhone: '',
   });
 
-  const token = localStorage.getItem('token') ?? '';
-
   // Pagination FE
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const paginatedPublishers = publishers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const paginatedPublishers = publishers.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   useEffect(() => {
     fetchPublishers();
@@ -73,7 +74,7 @@ export default function PublisherPage() {
   const fetchPublishers = async () => {
     try {
       setLoading(true);
-      const res = await getPublishers(token);
+      const res = await getPublishers();
       setPublishers(res.data || []);
     } catch (err) {
       console.error('Lỗi khi load publishers:', err);
@@ -93,19 +94,19 @@ export default function PublisherPage() {
     setForm(
       publisher
         ? {
-          id: publisher.id,
-          name: publisher.name,
-          address: publisher.address,
-          contactEmail: publisher.contactEmail,
-          contactPhone: publisher.contactPhone,
-        }
+            id: publisher.id,
+            name: publisher.name,
+            address: publisher.address,
+            contactEmail: publisher.contactEmail,
+            contactPhone: publisher.contactPhone,
+          }
         : {
-          id: null,
-          name: '',
-          address: '',
-          contactEmail: '',
-          contactPhone: '',
-        }
+            id: null,
+            name: '',
+            address: '',
+            contactEmail: '',
+            contactPhone: '',
+          }
     );
     setOpenDialog(true);
   };
@@ -113,9 +114,9 @@ export default function PublisherPage() {
   const handleSave = async () => {
     try {
       if (editingPublisher) {
-        await updatePublisher(token, form);
+        await updatePublisher(form);
       } else {
-        await createPublisher(token, form);
+        await createPublisher(form);
       }
       await fetchPublishers();
       setOpenDialog(false);
@@ -131,7 +132,7 @@ export default function PublisherPage() {
   const handleConfirmDelete = async () => {
     if (!confirmDelete.id) return;
     try {
-      await deletePublisher(token, confirmDelete.id);
+      await deletePublisher(confirmDelete.id);
       await fetchPublishers();
     } catch (err) {
       console.error('Lỗi khi xóa publisher:', err);

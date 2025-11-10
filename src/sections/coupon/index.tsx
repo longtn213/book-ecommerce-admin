@@ -60,7 +60,6 @@ export default function CouponsPage() {
     status: 'ACTIVE',
   });
 
-  const token = localStorage.getItem('token') ?? '';
 
   useEffect(() => {
     fetchCoupons();
@@ -69,7 +68,7 @@ export default function CouponsPage() {
   const fetchCoupons = async () => {
     try {
       setLoading(true);
-      const res = await getCoupons(token);
+      const res = await getCoupons();
       setCoupons(res.data || []);
     } catch (err) {
       console.error('Lỗi khi load coupons:', err);
@@ -109,9 +108,9 @@ export default function CouponsPage() {
   const handleSave = async () => {
     try {
       if (editingCoupon) {
-        await updateCoupon(token, form);
+        await updateCoupon(form);
       } else {
-        await createCoupon(token, form);
+        await createCoupon(form);
       }
       await fetchCoupons();
       setOpenDialog(false);
@@ -127,7 +126,7 @@ export default function CouponsPage() {
     if (!confirmDelete.code) return;
 
     try {
-      await deleteCoupon(token, confirmDelete.code);
+      await deleteCoupon(confirmDelete.code);
       await fetchCoupons();
     } catch (err) {
       console.error('Lỗi khi xóa coupon:', err);

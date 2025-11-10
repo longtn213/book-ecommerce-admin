@@ -1,40 +1,36 @@
-import axios from 'axios';
+// src/services/publisher.ts
+import axiosInstance from '../utils/axiosInstance';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:6868/api';
-export const getPublishers = async (token: string) => {
-  const res = await axios.get(`${API_BASE}/publishers`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+const PUBLISHER_API = '/publishers';
+
+/**
+ * 🟢 Lấy danh sách nhà xuất bản
+ */
+export const getPublishers = async () => {
+  const res = await axiosInstance.get(PUBLISHER_API);
+  return res.data.data || res.data;
 };
 
-export const createPublisher = async (token: string, data: any) => {
-  const res = await axios.post(`${API_BASE}/publishers`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  return res.data;
+/**
+ * 🟢 Tạo mới nhà xuất bản
+ */
+export const createPublisher = async (data: any) => {
+  const res = await axiosInstance.post(PUBLISHER_API, data);
+  return res.data.data || res.data;
 };
 
-export const updatePublisher = async (token: string, data: any) => {
-  const res = await axios.put(`${API_BASE}/publishers`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  return res.data;
+/**
+ * 🟢 Cập nhật nhà xuất bản
+ */
+export const updatePublisher = async (data: any) => {
+  const res = await axiosInstance.put(PUBLISHER_API, data);
+  return res.data.data || res.data;
 };
 
-export const deletePublisher = async (token: string, id: number) => {
-  const res = await axios.delete(`${API_BASE}/publishers/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+/**
+ * 🟢 Xóa nhà xuất bản theo ID
+ */
+export const deletePublisher = async (id: number) => {
+  const res = await axiosInstance.delete(`${PUBLISHER_API}/${id}`);
+  return res.data.data || res.data;
 };

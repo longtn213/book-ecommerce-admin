@@ -53,7 +53,6 @@ export default function CategoryPage() {
     categoryParentId: null,
   });
 
-  const token = localStorage.getItem('token') ?? '';
 
   // Pagination FE
   const [page, setPage] = useState(0);
@@ -71,7 +70,7 @@ export default function CategoryPage() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const res = await getCategories(token);
+      const res = await getCategories();
       setCategories(res.data || []);
     } catch (err) {
       console.error('Lỗi khi load categories:', err);
@@ -110,7 +109,7 @@ export default function CategoryPage() {
     try {
       if (editingCategory) {
         // ✅ Gọi PUT /api/categories
-        await updateCategory(token, {
+        await updateCategory({
           id: form.id,
           name: form.name,
           slug: form.slug,
@@ -118,7 +117,7 @@ export default function CategoryPage() {
         });
       } else {
         // ✅ Gọi POST /api/categories
-        await createCategory(token, {
+        await createCategory({
           name: form.name,
           slug: form.slug,
           categoryParentId: form.categoryParentId || null,
@@ -138,7 +137,7 @@ export default function CategoryPage() {
   const handleConfirmDelete = async () => {
     if (!confirmDelete.id) return;
     try {
-      await deleteCategory(token, confirmDelete.id);
+      await deleteCategory(confirmDelete.id);
       await fetchCategories();
     } catch (err) {
       console.error('Lỗi khi xóa category:', err);

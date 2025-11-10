@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { getOrders, getOrderDetail, updateOrderStatus } from '../../services/order';
+import { getOrderDetail, getOrders, updateOrderStatus } from '../../services/order';
 import { useNotification } from '../../layouts/components/useNotification';
 
 const ORDER_STATUSES = ['PENDING', 'PAID', 'SHIPPING', 'COMPLETED', 'CANCELLED'];
@@ -39,7 +39,6 @@ export default function OrderPage() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [openModal, setOpenModal] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const token = localStorage.getItem('token') ?? '';
   const { showNotification, Notification } = useNotification();
 
   // Lấy danh sách đơn hàng
@@ -51,7 +50,7 @@ export default function OrderPage() {
         keyword: keyword || undefined,
         status: status || undefined,
       };
-      const res = await getOrders(token, params);
+      const res = await getOrders(params);
       setOrders(res.data?.content || []);
       setTotal(res.data?.totalElements || 0);
     } catch (err) {
@@ -71,7 +70,7 @@ export default function OrderPage() {
   // Gọi API chi tiết đơn hàng
   const handleViewDetail = async (orderId: number) => {
     try {
-      const res = await getOrderDetail(token, orderId);
+      const res = await getOrderDetail(orderId);
       setSelectedOrder(res.data);
       setOpenModal(true);
     } catch (err) {
@@ -83,7 +82,7 @@ export default function OrderPage() {
     if (!selectedOrder) return;
     try {
       setUpdating(true);
-      const res = await updateOrderStatus(token, selectedOrder.id, selectedOrder.status);
+      const res = await updateOrderStatus(selectedOrder.id, selectedOrder.status);
 
       if (res.success) {
         showNotification('Cập nhật trạng thái thành công!', 'success');
@@ -219,7 +218,6 @@ export default function OrderPage() {
                 />
               </Typography>
 
-
               {/* Dropdown trạng thái có thể thay đổi */}
               <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 1 }}>
                 <Typography>
@@ -229,9 +227,7 @@ export default function OrderPage() {
                   size="small"
                   select
                   value={selectedOrder.status}
-                  onChange={(e) =>
-                    setSelectedOrder({ ...selectedOrder, status: e.target.value })
-                  }
+                  onChange={(e) => setSelectedOrder({ ...selectedOrder, status: e.target.value })}
                   sx={{ minWidth: 200 }}
                 >
                   {ORDER_STATUSES.map((s) => (
@@ -243,8 +239,7 @@ export default function OrderPage() {
               </Stack>
 
               <Typography sx={{ mt: 1 }}>
-                <strong>Tổng tiền:</strong>{' '}
-                {selectedOrder.totalAmount.toLocaleString('vi-VN')} ₫
+                <strong>Tổng tiền:</strong> {selectedOrder.totalAmount.toLocaleString('vi-VN')} ₫
               </Typography>
               <Typography>
                 <strong>Địa chỉ giao hàng:</strong> {selectedOrder.shippingAddress}
