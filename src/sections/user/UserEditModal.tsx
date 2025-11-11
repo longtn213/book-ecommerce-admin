@@ -89,7 +89,7 @@ export function UserEditModal({ open, user, onClose, onSuccess }: UserEditModalP
         dateOfBirth: data.dateOfBirth ? dayjs(data.dateOfBirth).toISOString() : null,
       };
 
-      await updateAdminUser(token, payload);
+      await updateAdminUser(payload);
       onSuccess();
       onClose();
     } catch (err) {

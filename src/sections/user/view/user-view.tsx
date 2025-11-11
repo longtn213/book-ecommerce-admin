@@ -47,7 +47,7 @@ export function UserView() {
           setError('Bạn chưa đăng nhập');
           return;
         }
-        const res = await getAdminUsers(token);
+        const res = await getAdminUsers();
         const data = Array.isArray(res)
           ? res
           : Array.isArray(res?.data)
@@ -102,7 +102,7 @@ export function UserView() {
         onSuccess={() => {
           const token = localStorage.getItem('token');
           if (token)
-            getAdminUsers(token).then((res) =>
+            getAdminUsers().then((res) =>
               setUsers(Array.isArray(res?.data) ? res.data : [])
             );
         }}
@@ -115,7 +115,7 @@ export function UserView() {
           // reload lại danh sách user sau khi cập nhật
           const token = localStorage.getItem('token');
           if (token)
-            getAdminUsers(token).then((res) =>
+            getAdminUsers().then((res) =>
               setUsers(Array.isArray(res?.data) ? res.data : [])
             );
         }}

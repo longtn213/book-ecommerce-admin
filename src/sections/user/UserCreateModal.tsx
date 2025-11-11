@@ -39,7 +39,7 @@ export function UserCreateModal({ open, onClose, onSuccess }: UserCreateModalPro
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Bạn chưa đăng nhập');
 
-      await createAdminUser(token, form);
+      await createAdminUser(form);
       onSuccess(); // reload list
       onClose();
     } catch (err: any) {
