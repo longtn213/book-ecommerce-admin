@@ -9,6 +9,7 @@ import CardHeader from '@mui/material/CardHeader';
 import { fNumber } from 'src/utils/format-number';
 
 import { Chart, useChart, ChartLegends } from 'src/components/chart';
+import { Box } from "@mui/system";
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +26,7 @@ type Props = CardProps & {
   };
 };
 
-export function AnalyticsCurrentVisits({ title, subheader, chart, sx, ...other }: Props) {
+export function AnalyticsTopBookBestSelling({ title, subheader, chart, sx, ...other }: Props) {
   const theme = useTheme();
 
   const chartSeries = chart.series.map((item) => item.value);
@@ -54,28 +55,48 @@ export function AnalyticsCurrentVisits({ title, subheader, chart, sx, ...other }
   });
 
   return (
-    <Card sx={sx} {...other}>
+    <Card
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        border: '1px solid',
+        borderColor: (theme) => theme.palette.divider,
+        transition: 'all 0.25s ease',
+        '&:hover': {
+          boxShadow: '0 8px 24px rgba(145, 158, 171, 0.2)',
+          borderColor: 'rgba(145, 158, 171, 0.3)',
+          transform: 'translateY(-2px)',
+        },
+      }}
+    >
       <CardHeader title={title} subheader={subheader} />
 
-      <Chart
-        type="pie"
-        series={chartSeries}
-        options={chartOptions}
-        sx={{
-          my: 6,
-          mx: 'auto',
-          width: { xs: 240, xl: 260 },
-          height: { xs: 240, xl: 260 },
-        }}
-      />
+      {/* Chart chiếm toàn bộ khoảng trống */}
+      <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Chart
+          type="pie"
+          series={chart.series.map((s) => s.value)}
+          options={{
+            ...chart.options,
+            labels: chart.series.map((s) => s.label),
+          }}
+          sx={{ width: '100%', height: '100%', maxHeight: 340 }}
+        />
+      </Box>
 
       <Divider sx={{ borderStyle: 'dashed' }} />
 
       <ChartLegends
-        labels={chartOptions?.labels}
-        colors={chartOptions?.colors}
-        sx={{ p: 3, justifyContent: 'center' }}
+        labels={chart.series.map((s) => s.label)}
+        colors={chart.colors}
+        sx={{
+          p: 2,
+          justifyContent: 'center',
+          mt: 'auto', // ✅ Đẩy xuống cuối
+        }}
       />
     </Card>
+
   );
 }

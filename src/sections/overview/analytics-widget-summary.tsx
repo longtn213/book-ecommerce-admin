@@ -19,26 +19,26 @@ import { Chart, useChart } from 'src/components/chart';
 type Props = CardProps & {
   title: string;
   total: number;
-  percent: number;
+  percent?: number; // ✅ Không bắt buộc nữa
   color?: PaletteColorKey;
   icon: React.ReactNode;
-  chart: {
-    series: number[];
-    categories: string[];
+  chart?: {         // ✅ Không bắt buộc nữa
+    series?: number[];
+    categories?: string[];
     options?: ChartOptions;
   };
 };
 
 export function AnalyticsWidgetSummary({
-  sx,
-  icon,
-  title,
-  total,
-  chart,
-  percent,
-  color = 'primary',
-  ...other
-}: Props) {
+                                         sx,
+                                         icon,
+                                         title,
+                                         total,
+                                         chart,
+                                         percent,
+                                         color = 'primary',
+                                         ...other
+                                       }: Props) {
   const theme = useTheme();
 
   const chartColors = [theme.palette[color].dark];
@@ -46,42 +46,36 @@ export function AnalyticsWidgetSummary({
   const chartOptions = useChart({
     chart: { sparkline: { enabled: true } },
     colors: chartColors,
-    xaxis: { categories: chart.categories },
+    xaxis: { categories: chart?.categories || [] },
     grid: {
-      padding: {
-        top: 6,
-        left: 6,
-        right: 6,
-        bottom: 6,
-      },
+      padding: { top: 6, left: 6, right: 6, bottom: 6 },
     },
     tooltip: {
       y: { formatter: (value: number) => fNumber(value), title: { formatter: () => '' } },
     },
-    markers: {
-      strokeWidth: 0,
-    },
-    ...chart.options,
+    markers: { strokeWidth: 0 },
+    ...chart?.options,
   });
 
-  const renderTrending = () => (
-    <Box
-      sx={{
-        top: 16,
-        gap: 0.5,
-        right: 16,
-        display: 'flex',
-        position: 'absolute',
-        alignItems: 'center',
-      }}
-    >
-      <Iconify width={20} icon={percent < 0 ? 'eva:trending-down-fill' : 'eva:trending-up-fill'} />
-      <Box component="span" sx={{ typography: 'subtitle2' }}>
-        {percent > 0 && '+'}
-        {fPercent(percent)}
+  const renderTrending = () =>
+    percent !== undefined && (
+      <Box
+        sx={{
+          top: 16,
+          gap: 0.5,
+          right: 16,
+          display: 'flex',
+          position: 'absolute',
+          alignItems: 'center',
+        }}
+      >
+        <Iconify width={20} icon={percent < 0 ? 'eva:trending-down-fill' : 'eva:trending-up-fill'} />
+        <Box component="span" sx={{ typography: 'subtitle2' }}>
+          {percent > 0 && '+'}
+          {fPercent(percent)}
+        </Box>
       </Box>
-    </Box>
-  );
+    );
 
   return (
     <Card
@@ -92,7 +86,10 @@ export function AnalyticsWidgetSummary({
           position: 'relative',
           color: `${color}.darker`,
           backgroundColor: 'common.white',
-          backgroundImage: `linear-gradient(135deg, ${varAlpha(theme.vars.palette[color].lighterChannel, 0.48)}, ${varAlpha(theme.vars.palette[color].lightChannel, 0.48)})`,
+          backgroundImage: `linear-gradient(135deg, ${varAlpha(
+            theme.vars.palette[color].lighterChannel,
+            0.48
+          )}, ${varAlpha(theme.vars.palette[color].lightChannel, 0.48)})`,
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
@@ -112,16 +109,18 @@ export function AnalyticsWidgetSummary({
       >
         <Box sx={{ flexGrow: 1, minWidth: 112 }}>
           <Box sx={{ mb: 1, typography: 'subtitle2' }}>{title}</Box>
-
           <Box sx={{ typography: 'h4' }}>{fShortenNumber(total)}</Box>
         </Box>
 
-        <Chart
-          type="line"
-          series={[{ data: chart.series }]}
-          options={chartOptions}
-          sx={{ width: 84, height: 56 }}
-        />
+        {/* ✅ Chỉ render biểu đồ nếu có chart */}
+        {chart && (
+          <Chart
+            type="line"
+            series={[{ data: chart.series || [] }]}
+            options={chartOptions}
+            sx={{ width: 84, height: 56 }}
+          />
+        )}
       </Box>
 
       <SvgColor
