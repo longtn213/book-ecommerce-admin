@@ -11,8 +11,8 @@ export const loginApi = async (username: string, password: string) => {
 };
 
 // 🟢 Quên mật khẩu
-export const forgotPasswordApi = async (email: string) => {
-  const res = await axiosInstance.post('/auth/forgot-password', { email });
+export const forgotPasswordApi = async (email: string, domain:string) => {
+  const res = await axiosInstance.post('/auth/forgot-password', { email,domain });
   return res.data;
 };
 
