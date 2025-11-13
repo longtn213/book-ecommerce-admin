@@ -72,7 +72,7 @@ export function SignInView() {
       setLoading(true);
       setError(null);
       setSuccessMsg(null);
-      const domain = window.location.origin; 
+      const domain = window.location.origin;
 
       await forgotPasswordApi(email,domain);
       setSuccessMsg('Vui lòng kiểm tra email của bạn để đặt lại mật khẩu.');
