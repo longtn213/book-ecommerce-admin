@@ -48,7 +48,6 @@ export default function AuthorPage() {
     avatarUrl: '',
   });
 
-  const token = localStorage.getItem('token') ?? '';
 
   // Pagination FE
   const [page, setPage] = useState(0);
@@ -67,7 +66,8 @@ export default function AuthorPage() {
     try {
       setLoading(true);
       const res = await getAuthors();
-      setAuthors(res.data?.data || []);
+
+      setAuthors(res.data || []);
     } catch (err) {
       console.error('Lỗi khi load authors:', err);
     } finally {
