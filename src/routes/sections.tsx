@@ -25,6 +25,7 @@ export const PublisherPage = lazy(() => import('src/pages/publisher'));
 export const AuthorPage = lazy(() => import('src/pages/author'));
 export const OrderPage = lazy(() => import('src/pages/order'));
 export const BookPage = lazy(() => import('src/pages/book'));
+export const ContactMessagePage = lazy(() => import('src/pages/ContactMessage'));
 
 
 const renderFallback = () => (
@@ -70,6 +71,7 @@ export const routesSection: RouteObject[] = [
           { path: 'author', element: <AuthorPage /> },
           { path: 'order', element: <OrderPage /> },
           { path: 'book', element: <BookPage /> },
+          { path: 'message', element: <ContactMessagePage /> },
         ],
       },
     ],

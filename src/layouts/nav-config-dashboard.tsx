@@ -53,4 +53,9 @@ export const navData = [
     path: '/book',
     icon: icon('ic-book'),
   },
+  {
+    title: 'Message',
+    path: '/message',
+    icon: icon('ic-message'),
+  },
 ];
