@@ -182,7 +182,7 @@ export function SignInView() {
 
             <Link
               variant="body2"
-              color="inherit"
+              color="primary"
               sx={{ alignSelf: 'flex-end', cursor: 'pointer' }}
               onClick={() => setIsForgot(true)}
             >

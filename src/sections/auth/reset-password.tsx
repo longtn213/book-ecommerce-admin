@@ -60,7 +60,6 @@ export default function ResetPasswordPage() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
