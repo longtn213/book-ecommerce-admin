@@ -30,11 +30,13 @@ import {
   updateCategory,
   deleteCategory,
 } from '../../services/category';
+import { uploadToCloudinary } from '../../utils/cloudinary.helper';
 interface CategoryForm {
   id: number | null;
   name: string;
   slug: string;
   categoryParentId: number | null;
+  categoryUrl:string;
 }
 export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -51,8 +53,8 @@ export default function CategoryPage() {
     name: '',
     slug: '',
     categoryParentId: null,
+    categoryUrl: '',
   });
-
 
   // Pagination FE
   const [page, setPage] = useState(0);
@@ -90,37 +92,40 @@ export default function CategoryPage() {
     setForm(
       category
         ? {
-            id: category.id,
-            name: category.name,
-            slug: category.slug,
-            categoryParentId: category.parent?.id || null,
-          }
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+          categoryParentId: category.parent?.id || null,
+          categoryUrl: category.categoryUrl || '',
+        }
         : {
-            id: null,
-            name: '',
-            slug: '',
-            categoryParentId: null,
-          }
+          id: null,
+          name: '',
+          slug: '',
+          categoryParentId: null,
+          categoryUrl: '',
+        }
     );
     setOpenDialog(true);
   };
 
   const handleSave = async () => {
     try {
+      console.log("categoryUrl", form.categoryUrl);
       if (editingCategory) {
-        // ✅ Gọi PUT /api/categories
         await updateCategory({
           id: form.id,
           name: form.name,
           slug: form.slug,
           categoryParentId: form.categoryParentId || null,
+          categoryUrl: form.categoryUrl,
         });
       } else {
-        // ✅ Gọi POST /api/categories
         await createCategory({
           name: form.name,
           slug: form.slug,
           categoryParentId: form.categoryParentId || null,
+          categoryUrl: form.categoryUrl,
         });
       }
       await fetchCategories();
@@ -170,6 +175,7 @@ export default function CategoryPage() {
               <TableHead sx={{ bgcolor: 'grey.50' }}>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Ảnh</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Tên danh mục</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Slug</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Danh mục cha</TableCell>
@@ -183,6 +189,17 @@ export default function CategoryPage() {
                   paginatedCategories.map((c) => (
                     <TableRow key={c.id} hover>
                       <TableCell>{c.id}</TableCell>
+                      <TableCell>
+                        {c.categoryUrl ? (
+                          <img
+                            src={c.categoryUrl}
+                            alt={c.name}
+                            style={{ width: 50, height: 50, borderRadius: 6, objectFit: 'cover' }}
+                          />
+                        ) : (
+                          '-'
+                        )}
+                      </TableCell>
                       <TableCell>{c.name}</TableCell>
                       <TableCell>{c.slug}</TableCell>
                       <TableCell>{c.parent ? c.parent.name : '-'}</TableCell>
@@ -232,12 +249,14 @@ export default function CategoryPage() {
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               fullWidth
             />
+
             <TextField
               label="Slug"
               value={form.slug}
               onChange={(e) => setForm({ ...form, slug: e.target.value })}
               fullWidth
             />
+
             <TextField
               label="Danh mục cha"
               select
@@ -260,6 +279,46 @@ export default function CategoryPage() {
                 ))}
             </TextField>
 
+            {/* Upload ảnh */}
+            <Stack spacing={1}>
+              <Typography variant="subtitle2">Ảnh danh mục</Typography>
+
+              {form.categoryUrl ? (
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <img
+                    src={form.categoryUrl}
+                    alt="Preview"
+                    style={{ width: 80, height: 80, borderRadius: 6, objectFit: 'cover' }}
+                  />
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    onClick={() => setForm({ ...form, categoryUrl: '' })}
+                  >
+                    Xóa ảnh
+                  </Button>
+                </Stack>
+              ) : (
+                <Button variant="outlined" component="label">
+                  Upload ảnh
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      const url = await uploadToCloudinary(file, 'category_images');
+                      if (url) {
+                        console.log("Cloudinary URL:", url); // ⬅ DEBUG
+                        setForm((prev) => ({ ...prev, categoryUrl: url }));
+                      }
+                    }}
+                  />
+                </Button>
+              )}
+            </Stack>
           </Stack>
         </DialogContent>
         <DialogActions>
