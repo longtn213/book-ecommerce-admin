@@ -27,7 +27,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getOrderDetail, getOrders, updateOrderStatus } from '../../services/order';
 import { useNotification } from '../../layouts/components/useNotification';
 
-const ORDER_STATUSES = ['PENDING', 'PAID', 'SHIPPING', 'COMPLETED', 'CANCELLED'];
+const ORDER_STATUSES = ['PENDING', 'PAID', 'SHIPPING', 'COMPLETED', 'CANCELLED', 'PENDING_PAYMENT'];
 
 export default function OrderPage() {
   const [orders, setOrders] = useState<any[]>([]);
