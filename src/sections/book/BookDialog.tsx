@@ -22,6 +22,8 @@ import { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { uploadToCloudinary } from '../../utils/cloudinary.helper';
+import { getEBookByBookId, uploadEBookPdf } from '../../services/ebook';
+import EbookReader from './EbookReader';
 
 interface BookFormData {
   title: string;
@@ -39,6 +41,13 @@ interface BookFormData {
   categoryIds: number[];
   authorIds: number[];
   publisherId: string;
+}
+
+interface EbookInfo {
+  ebookId: number;
+  fileUrl: string;
+  fileSize: number;
+  fileType: 'PDF';
 }
 
 export default function BookDialog({ open, onClose, onSave, book, categories, authors, publishers }: any) {
@@ -72,6 +81,42 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
     formData.categoryIds.length > 0 &&
     formData.authorIds.length > 0 &&
     formData.images.length > 0;
+
+  const [ebook, setEbook] = useState<EbookInfo | null>(null);
+  const [uploadingEbook, setUploadingEbook] = useState(false);
+  const [openReader, setOpenReader] = useState(false);
+
+  useEffect(() => {
+    if (open && book?.id) {
+      getEBookByBookId(book.id)
+        .then((res) => {
+          if (res.success) {
+            setEbook(res.data);
+          } else {
+            setEbook(null);
+          }
+        })
+        .catch(() => setEbook(null));
+    }
+  }, [open, book?.id]);
+
+  const handleUploadEbook = async (file: File) => {
+    if (!book?.id) return;
+
+    setUploadingEbook(true);
+    try {
+      const res = await uploadEBookPdf(book.id, file);
+
+      if (res.success) {
+        setEbook(res.data);
+      } else {
+        alert(res.message || 'Upload ebook thất bại');
+      }
+    } finally {
+      setUploadingEbook(false);
+    }
+  };
+
 
   useEffect(() => {
     if (open) {
@@ -163,9 +208,27 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
       <DialogTitle>{book ? 'Chỉnh sửa sách' : 'Thêm sách mới'}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} mt={1}>
-          <TextField name="title" label="Tiêu đề" fullWidth value={formData.title} onChange={handleChange} />
-          <TextField name="slug" label="Slug" fullWidth value={formData.slug} onChange={handleChange} />
-          <TextField name="isbn" label="ISBN" fullWidth value={formData.isbn} onChange={handleChange} />
+          <TextField
+            name="title"
+            label="Tiêu đề"
+            fullWidth
+            value={formData.title}
+            onChange={handleChange}
+          />
+          <TextField
+            name="slug"
+            label="Slug"
+            fullWidth
+            value={formData.slug}
+            onChange={handleChange}
+          />
+          <TextField
+            name="isbn"
+            label="ISBN"
+            fullWidth
+            value={formData.isbn}
+            onChange={handleChange}
+          />
           <TextField
             name="description"
             label="Mô tả"
@@ -216,12 +279,25 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
                 setFormData((prev) => ({ ...prev, handleChange: values.floatValue ?? 0 }))
               }
             />
-
           </Stack>
 
           <Stack direction="row" spacing={2}>
-            <TextField name="pages" label="Số trang" type="number" fullWidth value={formData.pages} onChange={handleChange} />
-            <TextField name="publishYear" label="Năm xuất bản" type="number" fullWidth value={formData.publishYear} onChange={handleChange} />
+            <TextField
+              name="pages"
+              label="Số trang"
+              type="number"
+              fullWidth
+              value={formData.pages}
+              onChange={handleChange}
+            />
+            <TextField
+              name="publishYear"
+              label="Năm xuất bản"
+              type="number"
+              fullWidth
+              value={formData.publishYear}
+              onChange={handleChange}
+            />
           </Stack>
 
           {/* 🔹 Dropdown chọn thể loại / tác giả / NXB */}
@@ -303,7 +379,13 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
           </Stack>
 
           <Stack direction="row" spacing={2}>
-            <TextField name="language" label="Ngôn ngữ" fullWidth value={formData.language} onChange={handleChange} />
+            <TextField
+              name="language"
+              label="Ngôn ngữ"
+              fullWidth
+              value={formData.language}
+              onChange={handleChange}
+            />
             <TextField
               name="status"
               label="Trạng thái"
@@ -337,7 +419,11 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
                     backgroundColor: '#f5f5f5',
                   }}
                 >
-                  <img src={url} alt={`book-img-${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img
+                    src={url}
+                    alt={`book-img-${idx}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                   <IconButton
                     size="small"
                     onClick={() => handleRemoveImage(url)}
@@ -387,20 +473,82 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
               </Box>
             </Stack>
           </Box>
+
+          {/* 📘 Ebook PDF */}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              Ebook (PDF)
+            </Typography>
+
+            {ebook ? (
+              <Box
+                sx={{
+                  p: 2,
+                  border: '1px solid #e0e0e0',
+                  borderRadius: 2,
+                  backgroundColor: '#fafafa',
+                }}
+              >
+                <Typography fontSize={14}>📄 Ebook đã upload</Typography>
+
+                <Typography fontSize={13} color="text.secondary">
+                  Dung lượng: {(ebook.fileSize / 1024 / 1024).toFixed(2)} MB
+                </Typography>
+
+                <Stack direction="row" spacing={2} mt={1}>
+                  <Button size="small" variant="outlined" onClick={() => setOpenReader(true)}>
+                    Xem ebook
+                  </Button>
+
+                  <Button
+                    size="small"
+                    variant="contained"
+                    component="label"
+                    disabled={uploadingEbook}
+                  >
+                    {uploadingEbook ? 'Đang upload...' : 'Thay ebook'}
+                    <input
+                      type="file"
+                      hidden
+                      accept="application/pdf"
+                      onChange={(e) => e.target.files && handleUploadEbook(e.target.files[0])}
+                    />
+                  </Button>
+                </Stack>
+              </Box>
+            ) : (
+              <Button variant="outlined" component="label" disabled={!book?.id || uploadingEbook}>
+                {uploadingEbook ? 'Đang upload...' : 'Upload ebook PDF'}
+                <input
+                  type="file"
+                  hidden
+                  accept="application/pdf"
+                  onChange={(e) => e.target.files && handleUploadEbook(e.target.files[0])}
+                />
+              </Button>
+            )}
+          </Box>
         </Stack>
       </DialogContent>
+      {openReader && ebook && (
+        <Dialog open={openReader} onClose={() => setOpenReader(false)} fullWidth maxWidth="md">
+          <DialogTitle>Xem Ebook</DialogTitle>
 
+          <DialogContent>
+            <EbookReader fileUrl={ebook?.fileUrl} />
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={() => setOpenReader(false)}>Đóng</Button>
+          </DialogActions>
+        </Dialog>
+      )}
       <DialogActions>
         <Button onClick={onClose}>Hủy</Button>
-        <Button
-          variant="contained"
-          disabled={!isFormValid}
-          onClick={() => onSave(formData)}
-        >
+        <Button variant="contained" disabled={!isFormValid} onClick={() => onSave(formData)}>
           Lưu
         </Button>
       </DialogActions>
-
     </Dialog>
   );
 }

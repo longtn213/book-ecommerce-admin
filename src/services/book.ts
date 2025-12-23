@@ -2,6 +2,8 @@
 import axiosInstance from '../utils/axiosInstance';
 
 const BOOK_API = '/admin/books';
+const EBOOK_API = '/admin/ebooks';
+
 
 // 🟢 Lấy danh sách sách (filter + pagination)
 export const getBooks = async (params?: any) => {
