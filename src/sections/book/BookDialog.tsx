@@ -276,7 +276,7 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
               fullWidth
               value={formData.stockQuantity}
               onValueChange={(values) =>
-                setFormData((prev) => ({ ...prev, handleChange: values.floatValue ?? 0 }))
+                setFormData((prev) => ({ ...prev, stockQuantity: values.floatValue ?? 0 }))
               }
             />
           </Stack>
