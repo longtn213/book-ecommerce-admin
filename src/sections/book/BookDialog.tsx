@@ -396,6 +396,7 @@ export default function BookDialog({ open, onClose, onSave, book, categories, au
             >
               <MenuItem value="ACTIVE">ACTIVE</MenuItem>
               <MenuItem value="OUT_OF_STOCK">OUT_OF_STOCK</MenuItem>
+              <MenuItem value="HIDDEN">HIDDEN</MenuItem>
             </TextField>
           </Stack>
 

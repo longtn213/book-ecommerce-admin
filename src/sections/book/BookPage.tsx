@@ -153,11 +153,14 @@ export default function BookPage() {
   const handleConfirmDelete = async () => {
     try {
       await deleteBook(confirmDelete.id);
-      showNotification('Xóa sách thành công!' ,'success');
+
+      showNotification('Xóa sách thành công!', 'success');
       setConfirmDelete(null);
       fetchBooks();
-    } catch {
-      showNotification('Xóa sách thất bại','error');
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Xóa sách thất bại';
+
+      showNotification(message, 'error');
     }
   };
 
