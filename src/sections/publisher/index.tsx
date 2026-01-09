@@ -30,6 +30,7 @@ import {
   getPublishers,
   updatePublisher,
 } from '../../services/publisher';
+import { useNotification } from '../../layouts/components/useNotification';
 
 // ----------------------------------------------------------------------
 
@@ -50,6 +51,7 @@ export default function PublisherPage() {
     open: false,
     id: null,
   });
+  const { showNotification, Notification } = useNotification();
 
   const [form, setForm] = useState<PublisherForm>({
     id: null,
@@ -133,13 +135,18 @@ export default function PublisherPage() {
     if (!confirmDelete.id) return;
     try {
       await deletePublisher(confirmDelete.id);
+      showNotification('Xóa nhà xuất bản thành công', 'success');
       await fetchPublishers();
-    } catch (err) {
-      console.error('Lỗi khi xóa publisher:', err);
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message || 'Không thể xóa nhà xuất bản. Vui lòng thử lại.';
+
+      showNotification(message, 'error');
     } finally {
       setConfirmDelete({ open: false, id: null });
     }
   };
+
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -276,6 +283,7 @@ export default function PublisherPage() {
           </Button>
         </DialogActions>
       </Dialog>
+      {Notification}
     </Box>
   );
 }

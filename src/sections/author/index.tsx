@@ -29,6 +29,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { getAuthors, createAuthor, updateAuthor, deleteAuthor } from '../../services/author';
 import { uploadToCloudinary } from '../../utils/cloudinary.helper';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
+import { useNotification } from '../../layouts/components/useNotification';
 
 export default function AuthorPage() {
   const [authors, setAuthors] = useState<any[]>([]);
@@ -48,6 +49,7 @@ export default function AuthorPage() {
     avatarUrl: '',
   });
 
+  const { showNotification, Notification } = useNotification();
 
   // Pagination FE
   const [page, setPage] = useState(0);
@@ -116,13 +118,17 @@ export default function AuthorPage() {
     if (!confirmDelete.id) return;
     try {
       await deleteAuthor(confirmDelete.id);
+      showNotification('Xóa tác giả thành công', 'success');
       await fetchAuthors();
-    } catch (err) {
-      console.error('Lỗi khi xóa tác giả:', err);
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Không thể xóa tác giả. Vui lòng thử lại.';
+
+      showNotification(message, 'error');
     } finally {
       setConfirmDelete({ open: false, id: null });
     }
   };
+
 
   // ✅ Upload ảnh lên Cloudinary
   const handleUploadImage = async (file: File) => {
@@ -280,7 +286,7 @@ export default function AuthorPage() {
         confirmText="Xóa"
         cancelText="Hủy"
       />
-
+      {Notification}
     </Box>
   );
 }

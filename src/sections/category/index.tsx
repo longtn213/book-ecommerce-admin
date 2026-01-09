@@ -31,6 +31,7 @@ import {
   deleteCategory,
 } from '../../services/category';
 import { uploadToCloudinary } from '../../utils/cloudinary.helper';
+import { useNotification } from '../../layouts/components/useNotification';
 interface CategoryForm {
   id: number | null;
   name: string;
@@ -47,6 +48,7 @@ export default function CategoryPage() {
     open: false,
     id: null,
   });
+  const { showNotification, Notification } = useNotification();
 
   const [form, setForm] = useState<CategoryForm>({
     id: null,
@@ -111,7 +113,6 @@ export default function CategoryPage() {
 
   const handleSave = async () => {
     try {
-      console.log("categoryUrl", form.categoryUrl);
       if (editingCategory) {
         await updateCategory({
           id: form.id,
@@ -143,21 +144,24 @@ export default function CategoryPage() {
     if (!confirmDelete.id) return;
     try {
       await deleteCategory(confirmDelete.id);
+      showNotification('Xóa danh mục thành công', 'success');
       await fetchCategories();
-    } catch (err) {
-      console.error('Lỗi khi xóa category:', err);
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Xóa danh mục thất bại';
+
+      showNotification(message, 'error');
     } finally {
       setConfirmDelete({ open: false, id: null });
     }
   };
 
+
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
-
-    <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
-      <Typography variant="h4" fontWeight={600} mb={3}>
-        Quản lý danh mục sách
-      </Typography>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h4" fontWeight={600} mb={3}>
+          Quản lý danh mục sách
+        </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -311,7 +315,7 @@ export default function CategoryPage() {
 
                       const url = await uploadToCloudinary(file, 'category_images');
                       if (url) {
-                        console.log("Cloudinary URL:", url); // ⬅ DEBUG
+                        console.log('Cloudinary URL:', url); // ⬅ DEBUG
                         setForm((prev) => ({ ...prev, categoryUrl: url }));
                       }
                     }}
@@ -349,6 +353,7 @@ export default function CategoryPage() {
           </Button>
         </DialogActions>
       </Dialog>
+      {Notification}
     </Box>
   );
 }
